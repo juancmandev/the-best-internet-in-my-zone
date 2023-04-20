@@ -49,7 +49,6 @@ const Map = () => {
 
   return (
     <>
-      <h1>Map component</h1>
       <div className='w-full h-[80vh]'>
         {loadMap ? (
           <GoogleMapReact

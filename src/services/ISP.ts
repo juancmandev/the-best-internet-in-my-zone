@@ -1,11 +1,31 @@
 import { db } from '@/firebase';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 
 export const getISP = () =>
   new Promise(async (resolve) => {
     const docSnapshot = await getDocs(collection(db, 'ISP'));
 
-    resolve(docSnapshot.docs.map((doc) => doc.data()));
+    const array: any = [];
+
+    docSnapshot.forEach((doc) => {
+      array.push({ ...doc.data(), id: doc.id });
+    });
+
+    resolve(array);
+  });
+
+export const getISPByName = (name: string) =>
+  new Promise(async (resolve) => {
+    const q = query(collection(db, 'ISP'), where('name', '==', name));
+    const docSnapshot = await getDocs(q);
+
+    const array: any = [];
+
+    docSnapshot.forEach((doc) => {
+      array.push({ ...doc.data(), id: doc.id });
+    });
+
+    resolve(array);
   });
 
 export const createISP = (data: any) =>
