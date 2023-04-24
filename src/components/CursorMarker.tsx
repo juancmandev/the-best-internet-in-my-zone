@@ -41,7 +41,10 @@ const CursorMarker = ({ lat, lng }: CursorMarkerProps) => {
           title='Review ISP'
           open={showModal}
           onClose={() => setShowModal(false)}>
-          <ReviewForm />
+          <ReviewForm
+            onClose={() => setShowModal(false)}
+            modalOpen={showModal}
+          />
         </Modal>
         <div className='absolute bottom-[-46px] left-[4px] w-0 h-0 -z-10 border-x-[36px] border-solid border-x-transparent border-t-[68px] border-t-red-500' />
       </div>

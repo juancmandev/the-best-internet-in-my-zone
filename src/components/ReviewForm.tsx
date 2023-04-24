@@ -1,17 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
+
 import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { getISP } from '@/services/ISP';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { StarEmpty, StarFilled } from '@/assets/icons';
+
+interface ReviewFormProps {
+  onClose: () => void;
+  modalOpen: boolean;
+}
 
 const classNames = (...classes: any) => classes.filter(Boolean).join(' ');
 
-const labelStyles = 'block text-sm font-medium leading-6 text-gray-900';
+const labelStyles =
+  'block text-base font-medium leading-6 text-gray-900 mb-[4px]';
 
-const ReviewForm = () => {
+const ReviewForm = ({ onClose, modalOpen }: ReviewFormProps) => {
   const [selected, setSelected] = useState<number>(0);
+  const [rating, setRating] = useState<number>(3);
   const [ispList, setISPList] = useState<any>([]);
 
   const fetchISP = async () => {
@@ -20,20 +29,44 @@ const ReviewForm = () => {
     setISPList(response);
   };
 
+  const formik = useFormik({
+    initialValues: {
+      review: '',
+    },
+    validationSchema: Yup.object({
+      review: Yup.string().required('Required'),
+    }),
+    onSubmit: (values) => {
+      const reviewValues = {
+        ...values,
+        rating: rating,
+        isp: ispList[selected],
+      };
+
+      console.log(reviewValues);
+    },
+  });
+
   useEffect(() => {
     fetchISP();
   }, []);
 
-  const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {
-      console.log(ispList[selected]);
-    },
-  });
+  useEffect(() => {
+    if (!modalOpen)
+      setTimeout(() => {
+        formik.resetForm();
+        setSelected(0);
+        setRating(3);
+      }, 200);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalOpen]);
+
+  const handleRating = (value: number) => setRating(value);
 
   return (
     <form
-      className='flex flex-col gap-[12px] my-[20px]'
+      className='flex flex-col gap-[20px] mt-[28px]'
       onSubmit={formik.handleSubmit}>
       <section>
         {ispList.length > 0 && (
@@ -67,7 +100,7 @@ const ReviewForm = () => {
                     leave='transition ease-in duration-100'
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'>
-                    <Listbox.Options className='absolute z-50 overflow-auto rounded-[8px] bg-white mt-[4px] py-[8px] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                    <Listbox.Options className='absolute w-[256px] z-50 overflow-auto rounded-[8px] bg-white mt-[4px] py-[8px] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                       {ispList.map((isp: any, index: number) => (
                         <Listbox.Option
                           key={isp.id}
@@ -119,8 +152,55 @@ const ReviewForm = () => {
           </Listbox>
         )}
       </section>
-      <footer>
-        <button type='submit'>Submit</button>
+      <section>
+        <label className={labelStyles}>Rating</label>
+        <div className='flex gap-[4px]'>
+          {Array.from(Array(5), (e, i) =>
+            i < rating ? (
+              <button
+                className='rounded-full p-[4px]'
+                onClick={() => handleRating(i + 1)}
+                type='button'
+                key={`current rate ${i}/5`}>
+                <StarFilled />
+              </button>
+            ) : (
+              <button
+                className='rounded-full p-[4px]'
+                onClick={() => handleRating(i + 1)}
+                type='button'
+                key={`rate ${i}/5`}>
+                <StarEmpty />
+              </button>
+            )
+          )}
+        </div>
+      </section>
+      <section>
+        <label htmlFor='review' className={labelStyles}>
+          Review
+        </label>
+        <textarea
+          id='review'
+          value={formik.values.review}
+          onChange={formik.handleChange}
+          className='w-full rounded-[8px] p-[8px] border focus:ring-blue-500 resize-none'
+          rows={4}
+          placeholder='What do you think about this ISP in this zone?'
+        />
+      </section>
+      <footer className='flex justify-end gap-[16px]'>
+        <button
+          onClick={onClose}
+          className='rounded-[4px] p-[8px] border border-blue-500 text-blue-500'
+          type='button'>
+          Cancel
+        </button>
+        <button
+          className='bg-blue-500 transition-colors text-white rounded-[4px] p-[8px] hover:bg-blue-400'
+          type='submit'>
+          Submit
+        </button>
       </footer>
     </form>
   );
