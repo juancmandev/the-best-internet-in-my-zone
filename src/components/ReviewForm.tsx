@@ -100,7 +100,7 @@ const ReviewForm = ({ onClose, modalOpen }: ReviewFormProps) => {
                     leave='transition ease-in duration-100'
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'>
-                    <Listbox.Options className='absolute w-[256px] z-50 overflow-auto rounded-[8px] bg-white mt-[4px] py-[8px] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                    <Listbox.Options className='absolute w-[203px] z-50 overflow-auto rounded-[8px] bg-white mt-[4px] py-[8px] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                       {ispList.map((isp: any, index: number) => (
                         <Listbox.Option
                           key={isp.id}
@@ -154,7 +154,7 @@ const ReviewForm = ({ onClose, modalOpen }: ReviewFormProps) => {
       </section>
       <section>
         <label className={labelStyles}>Rating</label>
-        <div className='flex gap-[4px]'>
+        <div className='flex justify-between'>
           {Array.from(Array(5), (e, i) =>
             i < rating ? (
               <button
@@ -186,7 +186,7 @@ const ReviewForm = ({ onClose, modalOpen }: ReviewFormProps) => {
           onChange={formik.handleChange}
           className='w-full rounded-[8px] p-[8px] border focus:ring-blue-500 resize-none'
           rows={4}
-          placeholder='What do you think about this ISP in this zone?'
+          placeholder='What do you think about this ISP?'
         />
       </section>
       <footer className='flex justify-end gap-[16px]'>
