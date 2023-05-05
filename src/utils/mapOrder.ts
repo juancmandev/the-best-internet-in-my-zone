@@ -1,9 +1,6 @@
-const mapOrder = (array: any, order: any) => {
+const mapOrder = (array: Array<any>, order: any) => {
   array.sort(function (a: any, b: any) {
-    const A = a;
-    const B = b;
-
-    if (order.indexOf(A) > order.indexOf(B)) return 1;
+    if (order.indexOf(a) > order.indexOf(b)) return 1;
     else return -1;
   });
 

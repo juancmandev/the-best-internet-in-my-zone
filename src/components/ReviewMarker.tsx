@@ -1,107 +1,70 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReviewProps from '@/interfaces/review.model';
-import mapOrder from '@/utils/mapOrder';
-import { Popover } from 'react-tiny-popover';
-import { getISPByName } from '@/services/ISP';
+import { StarFilled } from '@/assets/icons';
+import { StarEmpty } from '@/assets/icons';
+import { Marker, InfoWindow } from '@react-google-maps/api';
 
 interface ReviewMarkerProps {
-  lat: number;
-  lng: number;
+  reviewData: ReviewProps;
+  position: {
+    lat: number;
+    lng: number;
+  };
+}
+
+const ReviewMarker = ({ reviewData, position }: ReviewMarkerProps) => {
+  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+
+  return (
+    <Marker
+      onClick={() => setInfoWindowOpen((prev) => !prev)}
+      position={position}
+      options={{
+        icon:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Map_marker.svg/32px-Map_marker.svg.png',
+      }}>
+      {infoWindowOpen && (
+        <InfoWindow onCloseClick={() => setInfoWindowOpen(false)}>
+          <ReviewData reviewData={reviewData} />
+        </InfoWindow>
+      )}
+    </Marker>
+  );
+};
+
+interface ReviewDataPopoverProps {
   reviewData: ReviewProps;
 }
 
-const ReviewMarker = ({ lat, lng, reviewData }: ReviewMarkerProps) => {
-  const [showPopover, setShowPopover] = useState(false);
-  const [isp, setIsp] = useState<any>(null);
-
-  const fetchInternetServiceProviders = async () => {
-    try {
-      const data: any = await getISPByName(reviewData.isp);
-
-      setIsp(data[0]);
-    } catch {
-      alert(
-        'There was an error fetching the internet service providers. Please try again later.'
-      );
-    }
-  };
-
-  useEffect(() => {
-    fetchInternetServiceProviders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        onMouseLeave={() => setShowPopover(false)}
-        className='absolute bottom-[60px] left-[-40px] w-max h-max p-[8px] rounded-full bg-blue-500'>
-        <Popover
-          isOpen={showPopover}
-          content={<ReviewData reviewData={reviewData} />}>
-          <button
-            onMouseEnter={() => setShowPopover(true)}
-            type='button'
-            className='cursor-pointer px-[4px] py-[12px] bg-white rounded-full'>
-            <img
-              className='w-[60px] h-[40px] object-contain'
-              src={isp?.urlImage}
-              alt={`${isp?.name} logo`}
-            />
-          </button>
-        </Popover>
-        <div className='absolute bottom-[-48px] left-[6px] w-0 h-0 -z-10 border-x-[36px] border-solid border-x-transparent border-t-[68px] border-t-blue-500' />
-      </div>
-    </div>
-  );
-};
-
-const ReviewData = (props: any) => {
-  const { reviewData } = props;
-  const [reviewKeys, setReviewKeys] = useState<any>([]);
-
-  const handleReviewKeys = () => {
-    const keys = Object.keys(reviewData).filter(
-      (key) => key !== 'country' && key !== 'city' && key !== 'coordinates'
-    );
-    const keysOrder = [
-      'isp',
-      'rating',
-      'review',
-      'neighborhood',
-      'street',
-      'postalCode',
-    ];
-    mapOrder(keys, keysOrder);
-
-    setReviewKeys(keys);
-  };
-
-  useEffect(() => {
-    handleReviewKeys();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reviewData]);
-
-  return (
-    <div className='p-[20px] bg-white text-slate-950 rounded-[8px] shadow-md'>
-      {reviewKeys &&
-        reviewKeys.map((key: string) => (
-          <div key={key}>
-            <span className='flex gap-[4px]'>
-              <p className='font-bold capitalize'>{key}:</p>
-              <p>
-                {reviewData[key]}
-                {key === 'rating' && '/5'}
-              </p>
-            </span>
-          </div>
-        ))}
-    </div>
-  );
-};
+const ReviewData = ({ reviewData }: ReviewDataPopoverProps) => (
+  <div className='p-[12px] flex flex-col gap-[8px] text-base'>
+    <section>
+      <figure className='flex gap-[8px]'>
+        <img
+          className='w-[100px] h-auto'
+          src={reviewData.isp.urlImage}
+          alt={`${reviewData.isp.name} logo`}
+        />
+        <figcaption className='font-semibold capitalize'>
+          {reviewData.isp.name}
+        </figcaption>
+      </figure>
+    </section>
+    <section className='flex gap-[4px]'>
+      {Array.from(Array(reviewData.rating), (e, i) => (
+        <StarFilled key={`filled ${i}`} />
+      ))}
+      {Array.from(Array(5 - reviewData.rating), (e, i) => (
+        <StarEmpty key={`empty ${i}`} />
+      ))}
+    </section>
+    <section>
+      <p className='flex-wrap'>{reviewData.review}</p>
+    </section>
+  </div>
+);
 
 export default ReviewMarker;
