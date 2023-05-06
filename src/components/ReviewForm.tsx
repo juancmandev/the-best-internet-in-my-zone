@@ -8,6 +8,8 @@ import { StarEmpty, StarFilled } from '@/assets/icons';
 import IspProps from '@/interfaces/isp.model';
 import { getCountry } from '@/utils/getGeocodingData';
 
+const API_URL = process.env.API_URL as string;
+
 interface ReviewFormProps {
   onClose: () => void;
   modalOpen: boolean;
@@ -25,7 +27,7 @@ const ReviewForm = ({ onClose, modalOpen, coordinates }: ReviewFormProps) => {
     try {
       const country = await getCountry(coordinates[0], coordinates[1]);
 
-      const response = await fetch('http://localhost:8000/api/v1/isps', {
+      const response = await fetch(`${API_URL}/api/v1/isps`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +55,7 @@ const ReviewForm = ({ onClose, modalOpen, coordinates }: ReviewFormProps) => {
       };
 
       try {
-        const response = await fetch('http://localhost:8000/api/v1/reviews', {
+        const response = await fetch(`${API_URL}/api/v1/reviews`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

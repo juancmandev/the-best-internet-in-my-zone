@@ -6,6 +6,8 @@ import CursorMarker from './CursorMarker';
 import ReviewMarker from './ReviewMarker';
 import ReviewProps from '@/interfaces/review.model';
 
+const API_URL = process.env.API_URL as string;
+
 interface coords {
   lat: number;
   lng: number;
@@ -26,7 +28,7 @@ const Map = () => {
           point: [markerLocation.lat, markerLocation.lng],
           radius: radius,
         };
-        const response = await fetch('http://localhost:8000/api/v1/reviews', {
+        const response = await fetch(`${API_URL}/api/v1/reviews`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

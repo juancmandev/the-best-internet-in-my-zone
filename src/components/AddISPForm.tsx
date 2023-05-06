@@ -5,6 +5,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import countries from '@/utils/countries';
 
+const API_URL = process.env.API_URL as string;
+
 interface Props {
   onClose: () => void;
 }
@@ -31,7 +33,7 @@ const AddISPForm = ({ onClose }: Props) => {
       };
 
       try {
-        const response = await fetch('http://localhost:8000/api/v1/isps', {
+        const response = await fetch(`${API_URL}/api/v1/isps`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
