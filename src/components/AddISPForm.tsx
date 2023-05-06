@@ -51,7 +51,7 @@ const AddISPForm = ({ onClose }: Props) => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className='flex flex-col gap-[20px] mt-[28px] max-h-[500px] overflow-y-auto'>
+      className='flex flex-col gap-[20px] mt-[28px] max-h-[500px] px-[4px] overflow-y-auto'>
       <section>
         <label
           className='block text-base font-medium leading-6 text-gray-900 mb-[4px]'
