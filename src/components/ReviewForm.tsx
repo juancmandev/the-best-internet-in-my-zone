@@ -75,6 +75,7 @@ const ReviewForm = ({ onClose, modalOpen, coordinates }: ReviewFormProps) => {
 
   useEffect(() => {
     fetchISPs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
