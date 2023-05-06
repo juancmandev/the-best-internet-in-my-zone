@@ -7,6 +7,8 @@ import { useFormik } from 'formik';
 import { StarEmpty, StarFilled } from '@/assets/icons';
 import IspProps from '@/interfaces/isp.model';
 import { getCountry } from '@/utils/getGeocodingData';
+import CancelButton from './CancelButton';
+import PrimaryButton from './PrimaryButton';
 
 const API_URL = process.env.API_URL as string;
 
@@ -222,17 +224,10 @@ const ReviewForm = ({ onClose, modalOpen, coordinates }: ReviewFormProps) => {
         />
       </section>
       <footer className='flex justify-end gap-[16px]'>
-        <button
-          onClick={onClose}
-          className='rounded-[4px] p-[8px] border border-blue-500 text-blue-500'
-          type='button'>
+        <CancelButton onClick={onClose} buttonType='button'>
           Cancel
-        </button>
-        <button
-          className='bg-blue-500 transition-colors text-white rounded-[4px] p-[8px] hover:bg-blue-400'
-          type='submit'>
-          Submit
-        </button>
+        </CancelButton>
+        <PrimaryButton buttonType='submit'>Submit</PrimaryButton>
       </footer>
     </form>
   );

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import countries from '@/utils/countries';
+import CancelButton from './CancelButton';
+import PrimaryButton from './PrimaryButton';
 
 const API_URL = process.env.API_URL as string;
 
@@ -118,17 +120,10 @@ const AddISPForm = ({ onClose }: Props) => {
         </datalist>
       </section>
       <footer className='flex justify-end gap-[16px]'>
-        <button
-          className='rounded-[4px] p-[8px] border border-blue-500 text-blue-500'
-          onClick={onClose}
-          type='button'>
+        <CancelButton onClick={onClose} buttonType='button'>
           Cancel
-        </button>
-        <button
-          className='bg-blue-500 transition-colors text-white rounded-[4px] p-[8px] hover:bg-blue-400'
-          type='submit'>
-          Create
-        </button>
+        </CancelButton>
+        <PrimaryButton buttonType='submit'>Create</PrimaryButton>
       </footer>
     </form>
   );
